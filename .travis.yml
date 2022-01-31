@@ -1,0 +1,44 @@
+language: generic
+
+sudo: required
+
+# 단계 2. 도커 환경으로 만들 것이라고 선언
+services:
+  - docker
+
+# 단계 3. 구성된 도커 환경에서 dockerfile.dev로 이미지 생성
+before_install:
+  - docker build -t rmlgml/react-test-app -f ./frontend/Dockerfile.dev ./frontend
+
+# 단계 4. 생성된 테스트 이미지로 테스트 수행
+script:
+  - docker run -e CI=true rmlgml/react-test-app npm run test
+
+# 테스트 수행 성공하면
+after_success:
+  # 단계 5. 각각의 프로젝트 운영 버전 이미지 빌드
+  - docker build -t rmlgml/docker-frontend ./frontend
+  - docker build -t rmlgml/docker-backend ./backend
+  - docker build -t rmlgml/docker-nginx ./nginx
+
+  # 단계 6. 도커 허브에 빌드 된 파일을 넣어주기 위해 도커 허브 로그인
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+
+  # 단계 7. 빌드된 이미지 도커 허브에 보내주기
+  - docker push rmlgml/docker-frontend
+  - docker push rmlgml/docker-backend
+  - docker push rmlgml/docker-nginx
+
+# 단계 8. beanstalk이 업데이트된 빌드 이미지 가져와서 배포하도록 설정
+# deploy:
+#   provider: elasticbeanstalk
+#   region: "ap-northeast-2"
+#   app: "docker-fullstack-app"
+#   env: "DockerFullstackApp-env"
+#   bucket_name: elasticbeanstalk-ap-northeast-2-972153559337
+#   bucket_path: "docker-fullstack-app"
+#   on:
+#     branch: master
+  
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key: $AWS_SECRET_ACCESS_KEY
