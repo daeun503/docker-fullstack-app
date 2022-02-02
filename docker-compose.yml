@@ -25,6 +25,12 @@ services:
     volumes:
       - /app/node_modules
       - ./backend:/app
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: daeun0258
+      MYSQL_DATABASE: myapp
+      MYSQL_PORT: 3306
   # 여기 지워서 mysql 폴더도 지워도 됨
   # mysql:
   #   build: ./mysql

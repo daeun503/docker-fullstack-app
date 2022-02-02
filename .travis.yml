@@ -30,15 +30,15 @@ after_success:
   - docker push rmlgml/docker-nginx
 
 # 단계 8. beanstalk이 업데이트된 빌드 이미지 가져와서 배포하도록 설정
-# deploy:
-#   provider: elasticbeanstalk
-#   region: "ap-northeast-2"
-#   app: "docker-fullstack-app"
-#   env: "DockerFullstackApp-env"
-#   bucket_name: elasticbeanstalk-ap-northeast-2-972153559337
-#   bucket_path: "docker-fullstack-app"
-#   on:
-#     branch: master
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-northeast-2"
+  app: "docker-fullstack-app"
+  env: "DockerFullstackApp-env"
+  bucket_name: elasticbeanstalk-ap-northeast-2-218021626223
+  bucket_path: "docker-fullstack-app"
+  on:
+    branch: master
   
-#   access_key_id: $AWS_ACCESS_KEY
-#   secret_access_key: $AWS_SECRET_ACCESS_KEY
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
